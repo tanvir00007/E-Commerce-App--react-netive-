@@ -138,6 +138,7 @@ export default function ProductListScreen({ navigation }) {
             style={styles.image}
           />
           <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.category}>{item.category}</Text>
           <Text style={styles.price}>${item.price.toFixed(2)}</Text>
         </TouchableOpacity>
 
@@ -241,6 +242,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: '600',
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  category: {
+    fontSize: 14,
+    color: '#555',
     marginBottom: 5,
     textAlign: 'center',
   },
