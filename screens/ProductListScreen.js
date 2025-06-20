@@ -76,7 +76,15 @@ export default function ProductListScreen({ navigation }) {
   }, []);
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('@user');
+    try {
+      const remember = await AsyncStorage.getItem('@rememberMe');
+      if (remember !== 'true') {
+        await AsyncStorage.multiRemove(['@credentials', '@rememberMe']);
+      }
+      await AsyncStorage.removeItem('@user');
+    } catch (e) {
+      console.log('Logout error:', e);
+    }
     navigation.replace('Login');
   };
 

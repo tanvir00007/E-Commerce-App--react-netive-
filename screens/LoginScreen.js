@@ -7,12 +7,16 @@ export default function LoginScreen({ navigation }) {
   const [rememberMe, setRememberMe] = useState(false);
   const [password, setPassword] = useState('');
 
+  const USER_KEY = '@user';
+  const CREDS_KEY = '@credentials';
+  const REMEMBER_KEY = '@rememberMe';
+
   const CORRECT_PASSWORD = 'abc123';
 
   useEffect(() => {
     const checkLogin = async () => {
       try {
-        const savedUser = await AsyncStorage.getItem('@user');
+        const savedUser = await AsyncStorage.getItem(USER_KEY);
         if (savedUser) {
           navigation.replace('Main');  // ✅ Corrected: navigate to Main Tab
         }
@@ -21,6 +25,26 @@ export default function LoginScreen({ navigation }) {
       }
     };
     checkLogin();
+  }, []);
+
+  useEffect(() => {
+    const loadCredentials = async () => {
+      try {
+        const remember = await AsyncStorage.getItem(REMEMBER_KEY);
+        if (remember === 'true') {
+          const creds = await AsyncStorage.getItem(CREDS_KEY);
+          if (creds) {
+            const parsed = JSON.parse(creds);
+            setUsername(parsed.username || '');
+            setPassword(parsed.password || '');
+            setRememberMe(true);
+          }
+        }
+      } catch (e) {
+        console.log('Credential load error:', e);
+      }
+    };
+    loadCredentials();
   }, []);
 
   const handleLogin = async () => {
@@ -36,9 +60,15 @@ export default function LoginScreen({ navigation }) {
 
     try {
       if (rememberMe) {
-        await AsyncStorage.setItem('@user', username);
+        await AsyncStorage.setItem(USER_KEY, username);
+        await AsyncStorage.setItem(REMEMBER_KEY, 'true');
+        await AsyncStorage.setItem(
+          CREDS_KEY,
+          JSON.stringify({ username, password })
+        );
       } else {
-        await AsyncStorage.removeItem('@user');
+        await AsyncStorage.removeItem(USER_KEY);
+        await AsyncStorage.multiRemove([REMEMBER_KEY, CREDS_KEY]);
       }
       navigation.replace('Main');  // ✅ Corrected: navigate to Main Tab
     } catch (error) {
