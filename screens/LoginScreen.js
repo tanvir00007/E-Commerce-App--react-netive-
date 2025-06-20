@@ -5,6 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [password, setPassword] = useState('');
+
+  const CORRECT_PASSWORD = 'abc123';
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -26,9 +29,16 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
+    if (password !== CORRECT_PASSWORD) {
+      Alert.alert('Error', 'Invalid password');
+      return;
+    }
+
     try {
       if (rememberMe) {
         await AsyncStorage.setItem('@user', username);
+      } else {
+        await AsyncStorage.removeItem('@user');
       }
       navigation.replace('Main');  // ✅ Corrected: navigate to Main Tab
     } catch (error) {
@@ -46,6 +56,14 @@ export default function LoginScreen({ navigation }) {
         style={styles.input}
         value={username}
         onChangeText={setUsername}
+      />
+
+      <TextInput
+        placeholder="Password"
+        style={styles.input}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
       />
 
       <View style={styles.remember}>
