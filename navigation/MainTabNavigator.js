@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProductListScreen from '../screens/ProductListScreen';
 import CartScreen from '../screens/CartScreen';
 import OrderHistoryScreen from '../screens/OrderHistoryScreen';
+import BuyerListScreen from '../screens/BuyerListScreen';
 import CartIcon from '../components/CartIcon'; // ✅ Import CartIcon
 import { Ionicons } from '@expo/vector-icons'; // Icons for tabs
 
@@ -21,6 +22,7 @@ export default function MainTabNavigator() {
           if (route.name === 'Home') iconName = 'home-outline';
           else if (route.name === 'Cart') iconName = 'cart-outline';
           else if (route.name === 'Orders') iconName = 'receipt-outline';
+          else if (route.name === 'Buyers') iconName = 'people-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#007bff',
@@ -36,6 +38,11 @@ export default function MainTabNavigator() {
         name="Cart"
         component={CartScreen}
         options={{ title: 'My Cart' }}
+      />
+      <Tab.Screen
+        name="Buyers"
+        component={BuyerListScreen}
+        options={{ title: 'Buyers' }}
       />
       <Tab.Screen
         name="Orders"
